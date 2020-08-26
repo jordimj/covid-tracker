@@ -9,9 +9,11 @@ import Button from '@material-ui/core/Button';
 import StatsLineChart from './StatsLineChart';
 import { CountryStatsData } from '../shared/CountryStatsData';
 import { CountryList } from '../shared/CountryList';
+import { GetIsMobile } from '../utils/helpers';
+import { useWindowSize } from '../utils/useWindowSize';
 
 interface RootState {
-  countryStats: {
+  countryStats?: {
     key: CountryStatsData;
   };
 }
@@ -41,6 +43,9 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
     return items;
   };
 
+  const isMobile = GetIsMobile();
+  const windowSize = useWindowSize();
+
   return (
     <div>
       <FormControl variant="outlined">
@@ -58,7 +63,13 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
       <Button onClick={onButtonClick} variant="contained">
         Fetch stats
       </Button>
-      {countryStats && <StatsLineChart countryStats={countryStats} />}
+      {countryStats && (
+        <StatsLineChart
+          countryStats={countryStats}
+          isMobile={isMobile}
+          windowSize={windowSize}
+        />
+      )}
     </div>
   );
 };

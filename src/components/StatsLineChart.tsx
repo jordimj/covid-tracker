@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js';
 import { CountryStatsData, DataType } from '../shared/CountryStatsData';
+import { WindowProps } from '../utils/useWindowSize';
 
 const getData = (data: CountryStatsData[], dataType: DataType): number[] => {
   return data.map((element) => {
@@ -8,8 +9,17 @@ const getData = (data: CountryStatsData[], dataType: DataType): number[] => {
   });
 };
 
-export default function StatsLineChart({ countryStats }: { countryStats: {} }) {
+export default function StatsLineChart({
+  countryStats,
+  isMobile,
+  windowSize,
+}: {
+  countryStats: {};
+  isMobile: boolean;
+  windowSize: WindowProps;
+}) {
   const chartRef = useRef<HTMLCanvasElement>(null);
+  const { width, height } = windowSize;
 
   const data: CountryStatsData[] = Object.values(countryStats);
   const labels: string[] = Object.keys(countryStats);
@@ -71,7 +81,17 @@ export default function StatsLineChart({ countryStats }: { countryStats: {} }) {
         options: {
           aspectRatio: 2.5,
           legend: {
-            position: 'right',
+            position: isMobile ? 'bottom' : 'right',
+          },
+          scales: {
+            xAxes: [
+              {
+                type: 'time',
+                time: {
+                  unit: 'month',
+                },
+              },
+            ],
           },
         },
       });
@@ -80,5 +100,11 @@ export default function StatsLineChart({ countryStats }: { countryStats: {} }) {
     return () => lineChart.destroy();
   }, [countryStats]);
 
-  return <canvas ref={chartRef} width="900" height="600" />;
+  return (
+    <canvas
+      ref={chartRef}
+      width={isMobile && width ? width * 0.95 : '900'}
+      height={isMobile && height ? height * 0.8 : '600'}
+    />
+  );
 }

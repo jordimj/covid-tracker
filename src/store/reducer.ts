@@ -2,7 +2,7 @@ import { FETCH_COUNTRY_STATS } from './actions/types';
 import { CountryStatsData } from '../shared/CountryStatsData';
 
 export const reducer = (
-  state = { countryStats: {} },
+  state = {},
   action: {
     type: string;
     payload: {
