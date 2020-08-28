@@ -9,20 +9,35 @@ const getData = (data: CountryStatsData[], dataType: DataType): number[] => {
   });
 };
 
+const dataTimespanSlicer = (timespan: string, countryStats: {}): Object => {
+  return Object.fromEntries(
+    Object.entries(countryStats).slice(timespan === 'weeks' ? -15 : -30)
+  );
+};
+
 export default function StatsLineChart({
   countryStats,
+  timespan,
   isMobile,
   windowSize,
 }: {
   countryStats: {};
+  timespan: string;
   isMobile: boolean;
   windowSize: WindowProps;
 }) {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { width, height } = windowSize;
 
-  const data: CountryStatsData[] = Object.values(countryStats);
-  const labels: string[] = Object.keys(countryStats);
+  let slicedData = countryStats;
+
+  if (timespan !== 'all') {
+    slicedData = dataTimespanSlicer(timespan, countryStats);
+    console.log(slicedData);
+  }
+
+  const data: CountryStatsData[] = Object.values(slicedData);
+  const labels: string[] = Object.keys(slicedData);
 
   const newDailyCases: number[] = getData(data, DataType.NewDailyCases);
   const newDailyDeaths: number[] = getData(data, DataType.NewDailyDeaths);
@@ -88,7 +103,12 @@ export default function StatsLineChart({
               {
                 type: 'time',
                 time: {
-                  unit: 'month',
+                  unit:
+                    timespan === 'weeks'
+                      ? 'day'
+                      : timespan === 'month'
+                      ? 'week'
+                      : 'month',
                 },
               },
             ],
@@ -98,7 +118,7 @@ export default function StatsLineChart({
     }
 
     return () => lineChart.destroy();
-  }, [countryStats]);
+  }, [slicedData]);
 
   return (
     <canvas

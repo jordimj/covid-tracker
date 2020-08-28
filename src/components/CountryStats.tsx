@@ -5,16 +5,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import Button from '@material-ui/core/Button';
 import StatsLineChart from './StatsLineChart';
 import { CountryStatsData } from '../shared/CountryStatsData';
 import { CountryList } from '../shared/CountryList';
 import { GetIsMobile } from '../utils/helpers';
 import { useWindowSize } from '../utils/useWindowSize';
+import { TimespanRadios } from './TimespanRadios';
 
 interface RootState {
   countryStats?: {
-    key: CountryStatsData;
+    [key: string]: CountryStatsData;
   };
 }
 
@@ -23,12 +23,14 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
   const countryStats = useSelector((state: RootState) => state.countryStats);
   const [countryName, setCountryName] = React.useState('ES');
 
-  const onButtonClick = (): void => {
-    dispatch(fetchCountryStats(countryName));
-  };
+  // const onButtonClick = (): void => {
+  //   dispatch(fetchCountryStats(countryName));
+  // };
 
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setCountryName(event.target.value as string);
+    const newCountry = event.target.value as string;
+    setCountryName(newCountry);
+    dispatch(fetchCountryStats(newCountry));
   };
 
   const getMenuItems = (): JSX.Element[] => {
@@ -46,6 +48,8 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
   const isMobile = GetIsMobile();
   const windowSize = useWindowSize();
 
+  const [timespan, setTimespan] = React.useState<string>('month');
+
   return (
     <div>
       <FormControl variant="outlined">
@@ -60,12 +64,14 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
           {getMenuItems()}
         </Select>
       </FormControl>
-      <Button onClick={onButtonClick} variant="contained">
+      {/* <Button onClick={onButtonClick} variant="contained">
         Fetch stats
-      </Button>
+      </Button> */}
+      <TimespanRadios timespan={timespan} setTimespan={setTimespan} />
       {countryStats && (
         <StatsLineChart
           countryStats={countryStats}
+          timespan={timespan}
           isMobile={isMobile}
           windowSize={windowSize}
         />
