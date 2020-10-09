@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js';
-import { CountryStatsData, DataType } from '../shared/CountryStatsData';
+import {
+  CountryStatsData,
+  DataType,
+  showData,
+} from '../shared/CountryStatsData';
 import { WindowProps } from '../utils/useWindowSize';
 
 const getData = (data: CountryStatsData[], dataType: DataType): number[] => {
@@ -15,14 +19,16 @@ const dataTimespanSlicer = (timespan: string, countryStats: {}): Object => {
   );
 };
 
-export default function StatsLineChart({
+export function StatsLineChart({
   countryStats,
   timespan,
+  show,
   isMobile,
   windowSize,
 }: {
   countryStats: {};
   timespan: string;
+  show: showData;
   isMobile: boolean;
   windowSize: WindowProps;
 }) {
@@ -33,7 +39,6 @@ export default function StatsLineChart({
 
   if (timespan !== 'all') {
     slicedData = dataTimespanSlicer(timespan, countryStats);
-    console.log(slicedData);
   }
 
   const data: CountryStatsData[] = Object.values(slicedData);
@@ -66,37 +71,42 @@ export default function StatsLineChart({
               label: 'New daily cases',
               backgroundColor: 'rgba(255,0,255, 0.5)',
               borderWidth: 1,
+              hidden: !show.newDailyCases,
             },
             {
               data: newDailyDeaths,
               label: 'New Daily deaths',
               backgroundColor: 'rgba(128,0,0, 0.5)',
               borderWidth: 1,
+              hidden: !show.newDailyDeaths,
             },
             {
               data: totalCases,
               label: 'Total cases',
               backgroundColor: 'rgba(255,255,0, 0.5)',
               borderWidth: 1,
+              hidden: !show.totalCases,
             },
             {
               data: totalRecoveries,
               label: 'Total recoveries',
               backgroundColor: 'rgba(0,255,0, 0.5)',
               borderWidth: 1,
+              hidden: !show.totalRecoveries,
             },
             {
               data: totalDeaths,
               label: 'Total deaths',
               backgroundColor: 'rgba(255,0,0, 0.5)',
               borderWidth: 1,
+              hidden: !show.totalDeaths,
             },
           ],
         },
         options: {
           aspectRatio: 2.5,
           legend: {
-            position: isMobile ? 'bottom' : 'right',
+            display: false,
           },
           scales: {
             xAxes: [
@@ -123,8 +133,8 @@ export default function StatsLineChart({
   return (
     <canvas
       ref={chartRef}
-      width={isMobile && width ? width * 0.95 : '900'}
-      height={isMobile && height ? height * 0.8 : '600'}
+      width={isMobile && width ? width * 0.95 : '1200'}
+      height={isMobile && height ? height * 0.65 : '600'}
     />
   );
 }

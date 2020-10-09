@@ -13,3 +13,11 @@ export interface CountryStatsData {
   [DataType.TotalRecoveries]: number;
   [DataType.TotalDeaths]: number;
 }
+
+export interface showData {
+  newDailyCases: boolean;
+  newDailyDeaths: boolean;
+  totalCases: boolean;
+  totalRecoveries: boolean;
+  totalDeaths: boolean;
+}
