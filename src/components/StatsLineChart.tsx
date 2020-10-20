@@ -6,6 +6,8 @@ import {
   showData,
 } from '../shared/CountryStatsData';
 import { WindowProps } from '../utils/useWindowSize';
+import { groupDataBy } from '../utils/helpers';
+import { GroupByOptions } from './GroupByRadio';
 
 const getData = (data: CountryStatsData[], dataType: DataType): number[] => {
   return data.map((element) => {
@@ -22,12 +24,14 @@ const dataTimespanSlicer = (timespan: string, countryStats: {}): Object => {
 export function StatsLineChart({
   countryStats,
   timespan,
+  groupBy,
   show,
   isMobile,
   windowSize,
 }: {
   countryStats: {};
   timespan: string;
+  groupBy: GroupByOptions;
   show: showData;
   isMobile: boolean;
   windowSize: WindowProps;
@@ -35,14 +39,16 @@ export function StatsLineChart({
   const chartRef = useRef<HTMLCanvasElement>(null);
   const { width, height } = windowSize;
 
-  let slicedData = countryStats;
+  const slicedData =
+    timespan === 'all'
+      ? countryStats
+      : dataTimespanSlicer(timespan, countryStats);
 
-  if (timespan !== 'all') {
-    slicedData = dataTimespanSlicer(timespan, countryStats);
-  }
+  const groupedData =
+    groupBy === 'day' ? slicedData : groupDataBy(slicedData, groupBy);
 
-  const data: CountryStatsData[] = Object.values(slicedData);
-  const labels: string[] = Object.keys(slicedData);
+  const data: CountryStatsData[] = Object.values(groupedData);
+  const labels: string[] = Object.keys(groupedData);
 
   const newDailyCases: number[] = getData(data, DataType.NewDailyCases);
   const newDailyDeaths: number[] = getData(data, DataType.NewDailyDeaths);

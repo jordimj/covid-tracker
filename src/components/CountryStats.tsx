@@ -10,6 +10,8 @@ import { CountryDropdown } from '../shared/CountryDropdown';
 import { Spinner } from '../shared/Spinner';
 import { RootState } from '../store/reducer';
 import CSS from 'csstype';
+import { GroupByRadio } from './GroupByRadio';
+import { GroupByOptions } from './GroupByRadio';
 
 export const CountryStats: React.FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -36,6 +38,7 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
   const windowSize = useWindowSize();
 
   const [timespan, setTimespan] = React.useState<string>('month');
+  const [groupBy, setGroupBy] = React.useState<GroupByOptions>('week');
 
   const flexStyle: CSS.Properties = {
     display: 'flex',
@@ -56,6 +59,11 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
         setTimespan={setTimespan}
         isMobile={isMobile}
       />
+      <GroupByRadio
+        groupBy={groupBy}
+        setGroupBy={setGroupBy}
+        isMobile={isMobile}
+      />
       <DatasetCheckboxes show={show} setShow={setShow} isMobile={isMobile} />
 
       {loading && <Spinner loading={loading} />}
@@ -64,6 +72,7 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
         <StatsLineChart
           countryStats={countryStats}
           timespan={timespan}
+          groupBy={groupBy}
           show={show}
           isMobile={isMobile}
           windowSize={windowSize}
