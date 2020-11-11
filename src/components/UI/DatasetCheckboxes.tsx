@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { Checkbox, FormGroup, Typography } from '@material-ui/core';
-import { showData } from '../shared/CountryStatsData';
+import { showData } from '../../types';
 
 interface CheckboxProps {
   isMobile: boolean;

@@ -6,8 +6,7 @@ import {
   FormControlLabel,
   FormControl,
 } from '@material-ui/core';
-
-export type GroupByOptions = 'day' | 'week' | 'month';
+import { GroupByOptions } from '../../types';
 
 interface RadioProps {
   isMobile: boolean;

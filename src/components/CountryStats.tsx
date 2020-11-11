@@ -4,14 +4,14 @@ import { fetchCountryStats } from '../store/actions/actions';
 import { StatsLineChart } from './StatsLineChart';
 import { GetIsMobile } from '../utils/helpers';
 import { useWindowSize } from '../utils/useWindowSize';
-import { TimespanRadios } from './TimespanRadios';
-import { DatasetCheckboxes } from './DatasetCheckboxes';
-import { CountryDropdown } from '../shared/CountryDropdown';
-import { Spinner } from '../shared/Spinner';
-import { RootState } from '../store/reducer';
+import { TimespanRadios } from './UI/TimespanRadios';
+import { DatasetCheckboxes } from './UI/DatasetCheckboxes';
+import { CountryDropdown } from './UI/CountryDropdown';
+import { Spinner } from './UI/Spinner';
+import { RootState } from '../types';
 import CSS from 'csstype';
-import { GroupByRadio } from './GroupByRadio';
-import { GroupByOptions } from './GroupByRadio';
+import { GroupByRadio } from './UI/GroupByRadio';
+import { GroupByOptions } from '../types';
 
 export const CountryStats: React.FunctionComponent = (): JSX.Element => {
   const dispatch = useDispatch();
@@ -67,7 +67,7 @@ export const CountryStats: React.FunctionComponent = (): JSX.Element => {
       <DatasetCheckboxes show={show} setShow={setShow} isMobile={isMobile} />
 
       {loading && <Spinner loading={loading} />}
-      {error === 'No data' && 'No data for this country'}
+      {error?.message}
       {countryStats && !loading && (
         <StatsLineChart
           countryStats={countryStats}

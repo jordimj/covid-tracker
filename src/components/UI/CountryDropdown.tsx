@@ -1,6 +1,6 @@
 import React from 'react';
 import { InputLabel, FormControl, MenuItem, Select } from '@material-ui/core';
-import { CountryList } from './CountryList';
+import { CountryList } from '../../utils/CountryList';
 import CSS from 'csstype';
 
 export const CountryDropdown = ({

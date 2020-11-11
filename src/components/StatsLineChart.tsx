@@ -1,13 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js';
-import {
-  CountryStatsData,
-  DataType,
-  showData,
-} from '../shared/CountryStatsData';
+import { CountryStatsData, DataType, showData } from '../types';
 import { WindowProps } from '../utils/useWindowSize';
 import { groupDataBy } from '../utils/helpers';
-import { GroupByOptions } from './GroupByRadio';
+import { GroupByOptions } from '../types';
 
 const getData = (data: CountryStatsData[], dataType: DataType): number[] => {
   return data.map((element) => {

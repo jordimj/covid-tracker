@@ -1,5 +1,5 @@
-import { GroupByOptions } from '../components/GroupByRadio';
-import { CountryStatsData, DataType } from '../shared/CountryStatsData';
+import { GroupByOptions } from '../types';
+import { CountryStatsData, DataType } from '../types';
 import { useWindowSize } from './useWindowSize';
 
 export function GetIsMobile(): boolean {

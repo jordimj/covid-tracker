@@ -1,26 +1,22 @@
 import axios from 'axios';
 import { Dispatch } from 'redux';
-import {
-  FETCH_COUNTRY_STATS_START,
-  FETCH_COUNTRY_STATS_SUCCESS,
-  FETCH_COUNTRY_STATS_FAIL,
-} from './types';
-import { CountryStatsData } from '../../shared/CountryStatsData';
+import * as actionTypes from './types';
+import { CountryStatsData, GlobalStatsData } from '../../types';
 
 interface FetchCountryStatsStartAction {
-  type: typeof FETCH_COUNTRY_STATS_START;
+  type: typeof actionTypes.FETCH_COUNTRY_STATS_START;
 }
 
 interface FetchCountryStatsSuccessAction {
-  type: typeof FETCH_COUNTRY_STATS_SUCCESS;
+  type: typeof actionTypes.FETCH_COUNTRY_STATS_SUCCESS;
   payload: {
     timelineitems: { [key: string]: CountryStatsData }[];
   };
 }
 
 interface FetchCountryStatsFailAction {
-  type: typeof FETCH_COUNTRY_STATS_FAIL;
-  error: Error | string;
+  type: typeof actionTypes.FETCH_COUNTRY_STATS_FAIL;
+  error: Error;
 }
 
 export type FetchCountryStatsAction =
@@ -28,9 +24,28 @@ export type FetchCountryStatsAction =
   | FetchCountryStatsSuccessAction
   | FetchCountryStatsFailAction;
 
+interface FetchGlobalStatsStartAction {
+  type: typeof actionTypes.FETCH_GLOBAL_STATS_START;
+}
+
+interface FetchGlobalStatsSuccessAction {
+  type: typeof actionTypes.FETCH_GLOBAL_STATS_SUCCESS;
+  globalStats: GlobalStatsData;
+}
+
+interface FetchGlobalStatsFailAction {
+  type: typeof actionTypes.FETCH_GLOBAL_STATS_FAIL;
+  error: Error;
+}
+
+export type FetchGlobalStatsAction =
+  | FetchGlobalStatsStartAction
+  | FetchGlobalStatsSuccessAction
+  | FetchGlobalStatsFailAction;
+
 const fetchCountryStatsStart = (): FetchCountryStatsStartAction => {
   return {
-    type: FETCH_COUNTRY_STATS_START,
+    type: actionTypes.FETCH_COUNTRY_STATS_START,
   };
 };
 
@@ -38,16 +53,14 @@ const fetchCountryStatsSuccess = (data: {
   timelineitems: { [key: string]: CountryStatsData }[];
 }): FetchCountryStatsSuccessAction => {
   return {
-    type: FETCH_COUNTRY_STATS_SUCCESS,
+    type: actionTypes.FETCH_COUNTRY_STATS_SUCCESS,
     payload: data,
   };
 };
 
-const fetchCountryStatsFail = (
-  error: Error | string
-): FetchCountryStatsFailAction => {
+const fetchCountryStatsFail = (error: Error): FetchCountryStatsFailAction => {
   return {
-    type: FETCH_COUNTRY_STATS_FAIL,
+    type: actionTypes.FETCH_COUNTRY_STATS_FAIL,
     error,
   };
 };
@@ -66,10 +79,50 @@ export const fetchCountryStats = (countryName: string) => {
           fetchCountryStatsSuccess(response.data)
         );
       } else {
-        dispatch<FetchCountryStatsFailAction>(fetchCountryStatsFail('No data'));
+        dispatch<FetchCountryStatsFailAction>(
+          fetchCountryStatsFail(new Error('No data for this country')) // [todo] check when service is up
+        );
       }
     } catch (err) {
       dispatch<FetchCountryStatsFailAction>(fetchCountryStatsFail(err));
+    }
+  };
+};
+
+const fetchGlobalStatsStart = () => {
+  return {
+    type: actionTypes.FETCH_GLOBAL_STATS_START,
+  };
+};
+
+const fetchGlobalStatsSuccess = (globalStats: {}) => {
+  return {
+    type: actionTypes.FETCH_GLOBAL_STATS_SUCCESS,
+    globalStats,
+  };
+};
+
+const fetchGlobalStatsFail = (error: Error): FetchGlobalStatsFailAction => {
+  return {
+    type: actionTypes.FETCH_GLOBAL_STATS_FAIL,
+    error,
+  };
+};
+
+export const fetchGlobalStats = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch(fetchGlobalStatsStart());
+
+    try {
+      const response = await axios.get(
+        'https://api.thevirustracker.com/free-api?global=stats'
+      );
+
+      if (response.data) {
+        dispatch(fetchGlobalStatsSuccess(response.data.results[0]));
+      }
+    } catch (err) {
+      dispatch<FetchGlobalStatsFailAction>(fetchGlobalStatsFail(err));
     }
   };
 };
